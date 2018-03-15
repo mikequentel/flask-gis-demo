@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chalice GIS Demo</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.4/css/ol.css" type="text/css">
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.6.4/build/ol-debug.js"></script>
+  </head>
+  <body>
+    <style>
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+    </style>
+    <div id="mapDiv" class="map"></div>
+    <label id"queryLabel" name="queryLabel">REST URL QUERY: </label>
+    <form id="queryInput" name="queryInput">
+      <!-- <input type="text" id="service" name="service" value="http://localhost:8000"/> -->
+      <select id="service" name="service">
+        <option value="https://a4fpsm6md0.execute-api.us-east-1.amazonaws.com/api" selected>https://a4fpsm6md0.execute-api.us-east-1.amazonaws.com/api</option>
+        <option value="http://localhost:8000">http://localhost:8000</option>
+      </select>
+      <select id="querySelect" name="querySelect">
+        <option value="/restaurants/limit/100" selected>/restaurants/limit/100</option>
+        <option value="/restaurants/oid/1441071">/restaurants/oid/1441071</option>
+        <option value="/restaurants/facility/LITTLE ROMA PIZZA, INC.">/restaurants/facility/LITTLE ROMA PIZZA, INC.</option>
+        <option value="/restaurants/county/ONEIDA">/restaurants/county/ONEIDA</option>
+        <option value="/restaurants/circle/43.1009,-75.2327,150.5">/restaurants/circle/43.1009,-75.2327,150.5</option>
+        <option value="/restaurants/bbox/43.000000,-79.000000,41.000000,-71.000000">/restaurants/bbox/43.000000,-79.000000,41.000000,-71.000000</option>
+      </select>
+      <button id="querySubmit" name="querySubmit" type="button">Run Query</button>
+    </div>
+    <script>
+    var source = new ol.source.OSM();
+    var layer = new ol.layer.Tile({
+      name: "tileLayer",
+      source: source
+    });
+
+    function getIconStyle(labelVal) {
+      var iconStyle = new ol.style.Style({
+        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+          color: '#FF00FF',
+          crossOrigin: 'anonymous',
+          opacity: 0.75,
+          src: 'img/dot.png'
+        })),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          fill: new ol.style.Fill({ color: '#000' }),
+          stroke: new ol.style.Stroke({
+            color: '#fff', width: 2
+          }),
+          /*text: map.getView().getZoom() > 12 ? labelVal : ''*/
+          text: labelVal
+        })
+    });
+    return iconStyle;
+    }
+
+    var map = new ol.Map({
+      /* project: "EPSG:4326", */
+      project: "EPSG:3857",
+      layers: [layer],
+      target: "mapDiv",
+      view: new ol.View({
+        center: ol.proj.fromLonLat([-75.2326641,43.1009031]),
+        zoom: 8
+      })
+    });
+    var zoomslider = new ol.control.ZoomSlider();
+    map.addControl(zoomslider);
+
+    function successHandler(data) {
+      dataString = JSON.stringify(data);
+      dataString = dataString.replace(/\\/g,'');
+      dataString = dataString.replace(/'\[/g, '[');
+      dataString = dataString.replace(/]'/g, ']');
+      dataString = dataString.replace(/"\[/g, '[');
+      dataString = dataString.replace(/]"/g, ']');
+      var jsonData = JSON.parse(dataString);
+
+      var vectorSource = new ol.source.Vector({});
+
+      map.getLayers().getArray().some(function(layer, i, array) {
+        if (layer instanceof ol.layer.Vector) {
+          map.removeLayer(layer);
+        }
+      }, this);
+
+      for (var i = 0; i < jsonData.results.length; i++) {
+        var lon = parseFloat(jsonData.results[i].longitude);
+        var lat = parseFloat(jsonData.results[i].latitude);
+        if (isNaN(lon) || isNaN(lat)) {
+          continue;
+        }
+        var coordinate = [lon, lat];
+        var geom = new ol.geom.Point(ol.proj.fromLonLat(coordinate));
+        var ftr = new ol.Feature({geometry:geom});
+        var facility = jsonData.results[i].facility;
+        ftr.setStyle(getIconStyle(facility));
+        vectorSource.addFeature(ftr);
+      }
+
+      var pointLayer = new ol.layer.Vector({
+        name: "pointLayer",
+        source: vectorSource
+      });
+
+      map.addLayer(pointLayer);
+      map.render();
+    }
+
+    $(document).ready(function(){
+      $("#querySubmit").click(function(){
+        $.ajax({
+          url: document.queryInput.service.value + document.queryInput.querySelect.value,
+          dataType: 'json',
+          success: successHandler
+         });
+       });
+     });
+    </script>
+
+  </body>
+</html>

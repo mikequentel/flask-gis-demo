@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Chalice GIS Demo</title>
+    <title>Flask GIS Demo</title>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="https://openlayers.org/en/v4.6.4/css/ol.css" type="text/css">
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -22,7 +22,7 @@
       <!-- <input type="text" id="service" name="service" value="http://localhost:8000"/> -->
       <select id="service" name="service">
         <option value="https://a4fpsm6md0.execute-api.us-east-1.amazonaws.com/api" selected>https://a4fpsm6md0.execute-api.us-east-1.amazonaws.com/api</option>
-        <option value="http://localhost:8000">http://localhost:8000</option>
+        <option value="http://localhost:5000">http://localhost:5000</option>
       </select>
       <select id="querySelect" name="querySelect">
         <option value="/restaurants/limit/100" selected>/restaurants/limit/100</option>
@@ -75,14 +75,7 @@
     var zoomslider = new ol.control.ZoomSlider();
     map.addControl(zoomslider);
 
-    function successHandler(data) {
-      dataString = JSON.stringify(data);
-      dataString = dataString.replace(/\\/g,'');
-      dataString = dataString.replace(/'\[/g, '[');
-      dataString = dataString.replace(/]'/g, ']');
-      dataString = dataString.replace(/"\[/g, '[');
-      dataString = dataString.replace(/]"/g, ']');
-      var jsonData = JSON.parse(dataString);
+    function successHandler(jsonData) {
 
       var vectorSource = new ol.source.Vector({});
 
@@ -92,16 +85,16 @@
         }
       }, this);
 
-      for (var i = 0; i < jsonData.results.length; i++) {
-        var lon = parseFloat(jsonData.results[i].longitude);
-        var lat = parseFloat(jsonData.results[i].latitude);
+      for (var i = 0; i < jsonData.length; i++) {
+        var lon = parseFloat(jsonData[i].longitude);
+        var lat = parseFloat(jsonData[i].latitude);
         if (isNaN(lon) || isNaN(lat)) {
           continue;
         }
         var coordinate = [lon, lat];
         var geom = new ol.geom.Point(ol.proj.fromLonLat(coordinate));
         var ftr = new ol.Feature({geometry:geom});
-        var facility = jsonData.results[i].facility;
+        var facility = jsonData[i].facility;
         ftr.setStyle(getIconStyle(facility));
         vectorSource.addFeature(ftr);
       }

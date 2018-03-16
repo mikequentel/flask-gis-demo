@@ -1,6 +1,7 @@
 click==6.7
 docutils==0.14
 Flask==0.12.2
+Flask-Cors==3.0.3
 geographiclib==1.49
 geopy==1.11.0
 itsdangerous==0.24

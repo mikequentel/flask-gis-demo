@@ -1,6 +1,14 @@
 click==6.7
+docutils==0.14
 Flask==0.12.2
+geographiclib==1.49
+geopy==1.11.0
 itsdangerous==0.24
 Jinja2==2.10
+jmespath==0.9.3
 MarkupSafe==1.0
+psycopg2==2.7.4
+python-dateutil==2.6.1
+six==1.11.0
+typing==3.5.3.0
 Werkzeug==0.14.1

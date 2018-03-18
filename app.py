@@ -476,3 +476,6 @@ def violation_item(violation_item):
   records = cursor.fetchall()
   cursor.close()
   return json.dumps(records, default=json_serial)
+
+if __name__ == "__main__":
+  app.run(host='0.0.0.0', port=8888)

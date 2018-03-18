@@ -32,8 +32,12 @@
 
 ## Steps
 1. Clone the Git repository: `git clone https://github.com/mikequentel/flask-gis-demo.git`
-2. Enable the Virtual Environment (via `virtualenv`): `pip install -r requirements.txt`
+2. Enable the Virtual Environment (via `virtualenv`) and then load the pre-requisite libraries: `pip install -r requirements.txt`
 3. Install a local copy of the database `businesses` which contains the table `restaurants` by using the plain text dump `data/businesses_backup.sql`--example: assuming database named `businesses` already exists (that is, you already created the database), then for user `postgres`, run the command: `psql -U postgres -h localhost --set ON_ERROR_STOP=on businesses < businesses_backup.sql`
 4. Set the appropriate credentials, which set environment variables used to connect to the database.
 5. Start the server locally by running `export FLASK_APP=app.py; flask run` which will deploy the server to http://localhost:5000
 6. Now, you can run queries against the server through any HTTP client, but most easily through using the example at `client/map.html`
+
+## Running via Docker
+1. Install and configure the database `businesses` which has the table `restaurants`, as mentioned in the Hacking steps, and run the PostgreSQL service.
+2. Run the script `rundocker.sh`, which has commands for running the demo in a Docker container, serving over port `8888`, so you can access it at http://localhost:8888

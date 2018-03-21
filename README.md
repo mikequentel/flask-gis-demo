@@ -51,11 +51,11 @@
 
 ## Steps
 1. Create a Google CloudSQL database and load it with a PostgreSQL dump (such as the SQL file at `data/businesses_backup.sql`).
-2. Enable (for non-production purposes) public access to the CloudSQL...for Production purposes, use a proxy as described at: https://cloud.google.com/sql/docs/mysql/connect-kubernetes-engine 
-..1. **AUTHORISATION** tab-->**Authorised networks**-->**Add network**
-..2. Add `0.0.0.0/0`
-..3. Save
-3. Update the Dockerfile to include the database connection credential environment variables: `DB_URL`, `DB_USER`, `DB_PASSWD` 
+2. Enable (for non-production purposes) public access to the CloudSQL...for Production purposes, use a proxy as described at: https://cloud.google.com/sql/docs/mysql/connect-kubernetes-engine
+  1. **AUTHORISATION** tab-->**Authorised networks**-->**Add network**
+  2. Add `0.0.0.0/0`
+  3. Save
+3. Update the Dockerfile to include the database connection credential environment variables: `DB_URL`, `DB_USER`, `DB_PASSWD`
 4. See the steps described in these Google tutorials for getting started with GKE:
-..* https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
-..* https://cloud.google.com/kubernetes-engine/docs/quickstart
+   * https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
+   * https://cloud.google.com/kubernetes-engine/docs/quickstart

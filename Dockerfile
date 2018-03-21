@@ -15,7 +15,8 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 EXPOSE 80
 
 # Define environment variable
-ENV DB_URL localhost
+# ENV DB_URL localhost
+ENV DB_URL 35.196.126.203
 ENV DB_NAME businesses
 ENV DB_USER postgres
 ENV DB_PASSWD postgres 

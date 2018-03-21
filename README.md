@@ -1,6 +1,7 @@
 # Flask GIS Demo https://github.com/mikequentel/flask-gis-demo
 
 * A reference implementation of a REST-exposed GIS server using Flask. Includes use of PostgreSQL database. It is a proof-of-concept and a demo of how one can implement a REST GIS server. It is not meant to be a robust, production-quality solution, but rather an example and potential starting point for future projects.
+* Based on https://github.com/mikequentel/chalice-gis-demo but not using Chalice. Instead, this demo is meant to be deployed as either a Docker container by itself, or in conjunction with an orchestration platform like Kubernetes.
 * Database: [PostgreSQL](https://www.postgresql.org)
   * Based on restaurant inspection data, from several years ago (circa 2013), collected by the state of New York and shared at the USA government website [data.gov](https://www.data.gov)
     * This is publicly available information published by the US government.
@@ -41,3 +42,20 @@
 ## Running via Docker
 1. Install and configure the database `businesses` which has the table `restaurants`, as mentioned in the Hacking steps, and run the PostgreSQL service.
 2. Run the script `rundocker.sh`, which has commands for running the demo in a Docker container, serving over port `8888`, so you can access it at http://localhost:8888
+
+# Deploying to Google Cloud GKE
+
+## Prerequisites
+* Account at Google Cloud
+* Google Cloud Shell (can run in web browser) or `gcloud` and `kubectl` installed (for running commands locally).
+
+## Steps
+1. Create a Google CloudSQL database and load it with a PostgreSQL dump (such as the SQL file at `data/businesses_backup.sql`).
+2. Enable (for non-production purposes) public access to the CloudSQL...for Production purposes, use a proxy as described at: https://cloud.google.com/sql/docs/mysql/connect-kubernetes-engine 
+  1. **AUTHORISATION** tab-->**Authorised networks**-->**Add network**
+  2. Add `0.0.0.0/0`
+  3. Save
+3. Update the Dockerfile to include the database connection credential environment variables: `DB_URL`, `DB_USER`, `DB_PASSWD` 
+4. See the steps described in these Google tutorials for getting started with GKE:
+  * https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
+  * https://cloud.google.com/kubernetes-engine/docs/quickstart

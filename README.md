@@ -1,5 +1,7 @@
 # Flask GIS Demo https://github.com/mikequentel/flask-gis-demo
 
+![flask-gis-demo client](doc/img/flask-gis-demo_2018-03-21.png)
+
 * A reference implementation of a REST-exposed GIS server using Flask. Includes use of PostgreSQL database. It is a proof-of-concept and a demo of how one can implement a REST GIS server. It is not meant to be a robust, production-quality solution, but rather an example and potential starting point for future projects.
 * Based on https://github.com/mikequentel/chalice-gis-demo but not using Chalice. Instead, this demo is meant to be deployed as either a Docker container by itself, or in conjunction with an orchestration platform like Kubernetes.
 * Database: [PostgreSQL](https://www.postgresql.org)
@@ -15,12 +17,12 @@
 * At this time, the interfaces are GET (read-only) actions.
 
 ## Examples of included interfaces--one exists for each field in the database.
-* Select top (limit) of items **/restaurants/limit/{limit}**
-* Select by object ID **/restaurants/oid/{oid}**
-* Select by circle (items within the circle), with parameters latitude, longitude, and radius in km **/restaurants/circle/{circle}**
-* Select by bounding box (items within bounding box), with parameters upper left latitude, upper left longitude, lower right latitude, lower right longitude **/restaurants/bbox/43.000000,-79.000000,41.000000,-71.000000**
-* Select by facility (restaurant) name **/restaurants/facility/{facility}**
-* Select by county containing facilities of interest **/restaurants/county/{county}**
+* Select top (limit) of items **/restaurants/limit/{limit}** eg: http://35.229.75.23/restaurants/limit/100
+* Select by object ID **/restaurants/oid/{oid}** eg: http://35.229.75.23/restaurants/oid/1441071
+* Select by circle (items within the circle), with parameters latitude, longitude, and radius in km **/restaurants/circle/{circle}** eg: http://35.229.75.23/restaurants/circle/43.1009,-75.2327,150.5
+* Select by bounding box (items within bounding box), with parameters upper left latitude, upper left longitude, lower right latitude, lower right longitude **/restaurants/bbox/{bbox}** eg: http://35.229.75.23/restaurants/bbox/43.000000,-79.000000,41.000000,-71.000000
+* Select by facility (restaurant) name **/restaurants/facility/{facility}** eg: http://35.229.75.23/restaurants/facility/LITTLE%20ROMA%20PIZZA,%20INC%2E
+* Select by county containing facilities of interest **/restaurants/county/{county}** eg: http://35.229.75.23/restaurants/county/ONEIDA
 
 # Hacking
 
